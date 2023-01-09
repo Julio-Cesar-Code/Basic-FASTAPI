@@ -5,7 +5,7 @@ from typing import Optional
 from pydantic import BaseModel
 #FASTAPI
 from fastapi import FastAPI
-from fastapi import Body
+from fastapi import Body, Query
 app = FastAPI()
 
 #Models
@@ -26,3 +26,17 @@ def home():
 @app.post("/person/new")
 def create_person(person:Person=Body(...)):
     return person
+
+#Validations:query parameters
+@app.get("/person/detail")
+def show_person(
+    name: Optional[str] = Query(
+        default=None,
+        min_length=1,
+        max_length=50
+    ),
+
+    # El ... para hacerlo obligatorio, no recomendado en un Query parameter
+    age: int = Query(...)
+):
+    return {name: age }
