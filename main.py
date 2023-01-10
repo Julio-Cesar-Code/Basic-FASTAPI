@@ -3,7 +3,7 @@ from typing import Optional
 from enum import Enum
 
 #pydantic
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, EmailStr, PaymentCardNumber
 #FASTAPI
 from fastapi import FastAPI
 from fastapi import Body, Query, Path
@@ -19,9 +19,21 @@ class hairColor(Enum):
 
 #Models
 class Location (BaseModel):
-    city: str
-    state: str
-    country:str
+    city: str =Field(
+        ...,
+        min_length=1,
+        max_length=40
+    )
+    state: str = Field(
+        ...,
+        min_length=1,
+        max_length=50
+    )
+    country:str = Field (
+        ...,
+        min_length=1,
+        max_length=50
+    )
 
 class Person(BaseModel):
     first_name:str =Field(
@@ -42,6 +54,11 @@ class Person(BaseModel):
     )
     hair_color:Optional[hairColor]= Field( default=None)
     is_married:Optional[bool]=Field( default=None)
+    email: EmailStr = Field(
+        ...,
+        title='Email',
+        description='The email of the person that will receive the package.')
+    card_number: PaymentCardNumber = Field(...)
 
 
 @app.get("/")
